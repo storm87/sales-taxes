@@ -1,6 +1,9 @@
 package core;
 
+import gui.Shop;
 import model.*;
+
+import javax.swing.*;
 
 /**
  * This is the main application class.
@@ -36,5 +39,9 @@ public class SalesTaxes {
         basket.addBasketItem(PurchasableItemFactory.getItem(ItemType.MEDICAL,"packet of headache pills",9.75d),1,false);
         basket.addBasketItem(PurchasableItemFactory.getItem(ItemType.FOOD,"box of chocolates",11.25d),1,true);
         System.out.println(basket.printReceipt());
+
+        SwingUtilities.invokeLater(()->{
+            new Shop().initGUI();
+        });
     }
 }
