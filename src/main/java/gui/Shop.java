@@ -87,8 +87,7 @@ public class Shop extends JFrame {
         purchaseButton.setAction(new AbstractAction("Confirm order") {
             @Override
             public void actionPerformed(ActionEvent e) {
-                receiptArea.append("\n\n-------Order details---------\n");
-                receiptArea.append(basket.printReceipt());
+                confirmOrder();
             }
         });
 
@@ -105,6 +104,12 @@ public class Shop extends JFrame {
         frame.setVisible(true);
     }
 
+    private void confirmOrder() {
+        receiptArea.append("\n\n-------Order details---------\n");
+        receiptArea.append(basket.printReceipt());
+        basket.clearBasket();
+    }
+
     private void clearBasket() {
         basket.clearBasket();
         receiptArea.setText(emptyReceiptAreaText);
@@ -115,6 +120,9 @@ public class Shop extends JFrame {
         boolean imported = isImportedCheckBox.isSelected();
         PurchasableItem purchasedItem = PurchasableItemFactory.getItem((ItemType) itemTypeComboBox.getSelectedItem(),descriptionTextField.getText(),Double.parseDouble(priceTextField.getText()));
         if(purchasedItem != null) {
+            if(basket.getBasketItems().isEmpty()){
+                receiptArea.setText(emptyReceiptAreaText);
+            }
             basket.addBasketItem(purchasedItem, quantity, imported);
             receiptArea.append(Integer.toString(quantity));
             receiptArea.append((imported ? " imported ": " "));
