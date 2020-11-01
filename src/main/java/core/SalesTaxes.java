@@ -2,13 +2,11 @@ package core;
 
 import model.*;
 
-import java.util.ArrayList;
-
 public class SalesTaxes {
+
     public static void main( String[] args )
     {
         Basket basket = new Basket("Basket");
-        ArrayList<TaxableItem> items = new ArrayList<>();
         basket.addBasketItem(PurchasableItemFactory.getItem(ItemType.BOOK,"book",12.49d),1,false);
         basket.addBasketItem(PurchasableItemFactory.getItem(ItemType.GENERIC,"music CD",14.99d),1,false);
         basket.addBasketItem(PurchasableItemFactory.getItem(ItemType.FOOD,"chocolate bar",0.85d),1,false);
