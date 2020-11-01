@@ -21,11 +21,11 @@ public class TaxesCalculator {
     /**
      * Calculate raw taxes from an item's informations .
      *
-     * @param quantity      the quantity
-     * @param itemPrice     the item price
-     * @param taxRate       the tax rate
-     * @param importTaxRate the import tax rate
-     * @param isImported    the is imported
+     * @param quantity      the quantity of items to consider
+     * @param itemPrice     the single item price
+     * @param taxRate       the item tax rate
+     * @param importTaxRate the item import tax rate
+     * @param isImported    the item is imported flag
      * @return the raw taxes amount as double
      */
     public static double calculateTaxes(int quantity, double itemPrice, double taxRate, double importTaxRate, boolean isImported){
@@ -45,11 +45,11 @@ public class TaxesCalculator {
     /**
      * Calculate rounded taxes from an item's informations .
      *
-     * @param quantity      the quantity
-     * @param itemPrice     the item price
-     * @param taxRate       the tax rate
-     * @param importTaxRate the import tax rate
-     * @param isImported    the is imported
+     * @param quantity      the quantity of items to consider
+     * @param itemPrice     the single item price
+     * @param taxRate       the item tax rate
+     * @param importTaxRate the item import tax rate
+     * @param isImported    the item is imported flag
      * @return the rounded taxes amount as double
      */
     public static double calculateRoundedTaxes(int quantity, double itemPrice, double taxRate, double importTaxRate, boolean isImported){
@@ -139,7 +139,7 @@ public class TaxesCalculator {
     /**
      * Round a value to the nearest tick.
      *
-     * @param value the value
+     * @param value the value to round
      * @param tick  the tick
      * @return the rounded value
      */

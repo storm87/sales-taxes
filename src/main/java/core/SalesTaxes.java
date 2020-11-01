@@ -2,8 +2,16 @@ package core;
 
 import model.*;
 
+/**
+ * This is the main application class.
+ */
 public class SalesTaxes {
 
+    /**
+     * The entry point of application.
+     *
+     * @param args the input arguments
+     */
     public static void main( String[] args )
     {
         Basket basket = new Basket("Basket");
