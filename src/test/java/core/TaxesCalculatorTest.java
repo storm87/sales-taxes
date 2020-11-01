@@ -1,11 +1,7 @@
 package core;
 
 import junit.framework.TestCase;
-import model.ItemFactory;
-import model.ItemType;
-import model.TaxableItem;
-
-import java.util.ArrayList;
+import model.*;
 
 public class TaxesCalculatorTest extends TestCase {
 
@@ -45,79 +41,82 @@ public class TaxesCalculatorTest extends TestCase {
 
     public void testCalculateRoundedTaxesOnItem() {
         System.out.println( "Begin testing taxes calculations on single item!" );
-        double result = TaxesCalculator.calculateRoundedTaxesOnItem(ItemFactory.getItem(ItemType.GENERIC,"music CD",1,16.49d,false));
+        double result = TaxesCalculator.calculateRoundedTaxesOnItem(new BasketItem(PurchasableItemFactory.getItem(ItemType.GENERIC,"music CD",16.49d),1,false));
         assertEquals(result, 1.65d);
-        result = TaxesCalculator.calculateRoundedTaxesOnItem(ItemFactory.getItem(ItemType.GENERIC,"music CD",1,16.49d,true));
+        result = TaxesCalculator.calculateRoundedTaxesOnItem(new BasketItem(PurchasableItemFactory.getItem(ItemType.GENERIC,"music CD",16.49d),1,true));
         assertEquals(result, 2.45d);
         System.out.println( "Completed taxes calculations on single item!" );
     }
 
     public void testCalculateRoundedTaxesOnItemList() {
         System.out.println( "Begin testing rounded taxes calculations on list of items!" );
-        ArrayList<TaxableItem> items = new ArrayList<>();
-        items.add(ItemFactory.getItem(ItemType.GENERIC,"music CD",1,16.49d,false));
-        items.add(ItemFactory.getItem(ItemType.GENERIC,"music CD",1,16.49d,false));
-        items.add(ItemFactory.getItem(ItemType.GENERIC,"music CD",1,16.49d,false));
-        items.add(ItemFactory.getItem(ItemType.GENERIC,"music CD",1,16.49d,false));
-        double result = TaxesCalculator.calculateRoundedTaxesOnItemList(items);
+        Basket firstBasket = new Basket("Basket 1");
+        firstBasket.addBasketItem(PurchasableItemFactory.getItem(ItemType.GENERIC,"music CD",16.49d),1,false);
+        firstBasket.addBasketItem(PurchasableItemFactory.getItem(ItemType.GENERIC,"music CD",16.49d),1,false);
+        firstBasket.addBasketItem(PurchasableItemFactory.getItem(ItemType.GENERIC,"music CD",16.49d),1,false);
+        firstBasket.addBasketItem(PurchasableItemFactory.getItem(ItemType.GENERIC,"music CD",16.49d),1,false);
+        double result = TaxesCalculator.calculateRoundedTaxesOnBasket(firstBasket);
         assertEquals(result, 6.6d);
+        firstBasket.clearBasket();
 
-        items.clear();
-        items.add(ItemFactory.getItem(ItemType.GENERIC,"music CD",4,16.49d,false));
-        result = TaxesCalculator.calculateRoundedTaxesOnItemList(items);
+        Basket secondBasket = new Basket("Basket 2");
+        secondBasket.addBasketItem(PurchasableItemFactory.getItem(ItemType.GENERIC,"music CD",16.49d),4,false);
+        result = TaxesCalculator.calculateRoundedTaxesOnBasket(secondBasket);
         assertEquals(result, 6.6d);
+        secondBasket.clearBasket();
 
-        items.clear();
-        items.add(ItemFactory.getItem(ItemType.GENERIC,"music CD",4,16.49d,true));
-        result = TaxesCalculator.calculateRoundedTaxesOnItemList(items);
+        Basket thirdBasket = new Basket("Basket 3");
+        thirdBasket.addBasketItem(PurchasableItemFactory.getItem(ItemType.GENERIC,"music CD",16.49d),4,true);
+        result = TaxesCalculator.calculateRoundedTaxesOnBasket(thirdBasket);
         assertEquals(result, 9.9d);
 
-        items.clear();
-        items.add(ItemFactory.getItem(ItemType.GENERIC,"music CD",1,16.49d,true));
-        items.add(ItemFactory.getItem(ItemType.GENERIC,"music CD",1,16.49d,true));
-        items.add(ItemFactory.getItem(ItemType.GENERIC,"music CD",1,16.49d,true));
-        items.add(ItemFactory.getItem(ItemType.GENERIC,"music CD",1,16.49d,true));
-        result = TaxesCalculator.calculateRoundedTaxesOnItemList(items);
+        Basket fourthBasket = new Basket("Basket 4");
+        fourthBasket.addBasketItem(PurchasableItemFactory.getItem(ItemType.GENERIC,"music CD",16.49d),1,true);
+        fourthBasket.addBasketItem(PurchasableItemFactory.getItem(ItemType.GENERIC,"music CD",16.49d),1,true);
+        fourthBasket.addBasketItem(PurchasableItemFactory.getItem(ItemType.GENERIC,"music CD",16.49d),1,true);
+        fourthBasket.addBasketItem(PurchasableItemFactory.getItem(ItemType.GENERIC,"music CD",16.49d),1,true);
+        result = TaxesCalculator.calculateRoundedTaxesOnBasket(fourthBasket);
         assertEquals(result, 9.9d);
         System.out.println( "Completed testing rounded taxes calculations on list of items!" );
     }
 
     public void testPrintReceipt() {
         System.out.println( "Begin testing receipt printing!" );
-        ArrayList<TaxableItem> items = new ArrayList<>();
-        items.add(ItemFactory.getItem(ItemType.BOOK,"book",1,12.49d,false));
-        items.add(ItemFactory.getItem(ItemType.GENERIC,"music CD",1,14.99d,false));
-        items.add(ItemFactory.getItem(ItemType.FOOD,"chocolate bar",1,0.85d,false));
-        String receipt = TaxesCalculator.printReceipt(items);
-        assertEquals(receipt, "1 book: 12.49\n" +
+        Basket basket = new Basket("Basket");
+
+        basket.addBasketItem(PurchasableItemFactory.getItem(ItemType.BOOK,"book",12.49d),1,false);
+        basket.addBasketItem(PurchasableItemFactory.getItem(ItemType.GENERIC,"music CD",14.99d),1,false);
+        basket.addBasketItem(PurchasableItemFactory.getItem(ItemType.FOOD,"chocolate bar",0.85d),1,false);
+        String receipt = basket.printReceipt();
+        assertEquals("1 book: 12.49\n" +
                 "1 music CD: 16.49\n" +
                 "1 chocolate bar: 0.85\n" +
-                "Sales Taxes: 1.5\n" +
-                "Total: 29.83");
+                "Sales Taxes: 1.50\n" +
+                "Total: 29.83", receipt);
 
         System.out.println( "Testing receipt for basket 2:" );
-        items.clear();
-        items.add(ItemFactory.getItem(ItemType.FOOD,"box of chocolates",1,10.00d,true));
-        items.add(ItemFactory.getItem(ItemType.GENERIC,"bottle of perfume",1,47.50d,true));
-        receipt = TaxesCalculator.printReceipt(items);
-        assertEquals(receipt, "1 imported box of chocolates: 10.5\n" +
+        basket.clearBasket();
+        basket.addBasketItem(PurchasableItemFactory.getItem(ItemType.FOOD,"box of chocolates",10.00d),1,true);
+        basket.addBasketItem(PurchasableItemFactory.getItem(ItemType.GENERIC,"bottle of perfume",47.50d),1,true);
+        receipt = basket.printReceipt();
+        assertEquals("1 imported box of chocolates: 10.50\n" +
                 "1 imported bottle of perfume: 54.65\n" +
                 "Sales Taxes: 7.65\n" +
-                "Total: 65.15");
+                "Total: 65.15",receipt);
 
         System.out.println( "Testing receipt for basket 3:" );
-        items.clear();
-        items.add(ItemFactory.getItem(ItemType.GENERIC,"bottle of perfume",1,27.99d,true));
-        items.add(ItemFactory.getItem(ItemType.GENERIC,"bottle of perfume",1,18.99d,false));
-        items.add(ItemFactory.getItem(ItemType.MEDICAL,"packet of headache pills",1,9.75d,false));
-        items.add(ItemFactory.getItem(ItemType.FOOD,"box of chocolates",1,11.25d,true));
-        receipt = TaxesCalculator.printReceipt(items);
-        assertEquals(receipt, "1 imported bottle of perfume: 32.19\n" +
+        basket.clearBasket();
+        basket.addBasketItem(PurchasableItemFactory.getItem(ItemType.GENERIC,"bottle of perfume",27.99d),1,true);
+        basket.addBasketItem(PurchasableItemFactory.getItem(ItemType.GENERIC,"bottle of perfume",18.99d),1,false);
+        basket.addBasketItem(PurchasableItemFactory.getItem(ItemType.MEDICAL,"packet of headache pills",9.75d),1,false);
+        basket.addBasketItem(PurchasableItemFactory.getItem(ItemType.FOOD,"box of chocolates",11.25d),1,true);
+        receipt = basket.printReceipt();
+        assertEquals("1 imported bottle of perfume: 32.19\n" +
                 "1 bottle of perfume: 20.89\n" +
                 "1 packet of headache pills: 9.75\n" +
-                "1 imported box of chocolates: 11.8\n" +
+                "1 imported box of chocolates: 11.80\n" +
                 "Sales Taxes: 6.65\n" +
-                "Total: 74.63");
+                "Total: 74.63",receipt);
 
         System.out.println( "Completed testing receipt printing!" );
     }

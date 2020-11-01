@@ -8,4 +8,5 @@ public interface TaxableItem {
     public double getPrice();
     public boolean isImported();
     public double getTaxesAmount();
+    public void setTaxesAmount(double amount);
 }

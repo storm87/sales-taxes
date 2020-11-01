@@ -1,13 +1,16 @@
 package core;
 
-import model.Item;
+import model.Basket;
 import model.TaxableItem;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.List;
 
 public class TaxesCalculator {
+
+    private static DecimalFormat df=new DecimalFormat("###,##0.00########");
 
     public static double calculateTaxes(int quantity, double itemPrice, double taxRate, double importTaxRate, boolean isImported){
         double result = 0;
@@ -57,6 +60,11 @@ public class TaxesCalculator {
         return roundToNearest(result, 0.05);
     }
 
+    public static double calculateRoundedTaxesOnBasket(Basket basket){
+        double result = calculateTaxesOnItemList(basket.getBasketItems());
+        return roundToNearest(result, 0.05);
+    }
+
     public static double calculateTaxesOnItem(TaxableItem good){
         return calculateTaxes(good.getQuantity(),good.getPrice(),good.getTaxesRate(), good.getImportTaxesRate(),good.isImported());
     }
@@ -80,14 +88,15 @@ public class TaxesCalculator {
         double totalAmount = TaxesCalculator.calculateRawTotalAmountOnItemList(items) + taxesAmount;
 
         for(TaxableItem item : items){
+            item.setTaxesAmount(TaxesCalculator.calculateRoundedTaxesOnItem(item));
             output.append(item).append("\n");
         }
         output.append("Sales Taxes: " + taxesAmount).append("\n");
-        output.append("Total: " + toPlainStrinNoTrailingZeroes(totalAmount) );
+        output.append("Total: " + formatValue(totalAmount) );
         return output.toString();
     }
 
-    public static String toPlainStrinNoTrailingZeroes(double value){
-        return new BigDecimal(value).setScale(10, RoundingMode.HALF_UP).stripTrailingZeros().toPlainString();
+    public static String formatValue(double value){
+        return df.format(new BigDecimal(value).setScale(10, RoundingMode.HALF_UP).doubleValue());
     }
 }
