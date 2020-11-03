@@ -10,6 +10,10 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.text.DecimalFormat;
 
+/**
+ * This class creates a basic GUI that can be used to create a basket by adding items and calculates the amount of taxes
+ * by printing a receipt.
+ */
 public class Shop extends JFrame {
 
     final private String emptyReceiptAreaText = "\n-------Basket content---------\n";
@@ -18,20 +22,53 @@ public class Shop extends JFrame {
 
     private Basket basket = new Basket("My Basket");
 
+    /**
+     * The Receipt area.
+     */
     JTextArea receiptArea = new JTextArea(emptyReceiptAreaText);
+    /**
+     * The Price text field.
+     */
     JFormattedTextField priceTextField = new JFormattedTextField(new DecimalFormat("###,##0.00########"));
+    /**
+     * The Quantity combo box.
+     */
     JComboBox<Integer> quantityComboBox = new JComboBox<>(new Integer[]{1,2,3,4,5,6,7,8,9,10});
+    /**
+     * The Description text field.
+     */
     JTextField descriptionTextField = new JTextField(defaultItemDescription);
+    /**
+     * The Item type combo box.
+     */
     JComboBox<ItemType> itemTypeComboBox = new JComboBox<>(ItemType.values());
+    /**
+     * The Is imported check box.
+     */
     JCheckBox isImportedCheckBox = new JCheckBox("Imported");
+    /**
+     * The Add item button.
+     */
     JButton addItemButton = new JButton("");
+    /**
+     * The Purchase button.
+     */
     JButton purchaseButton = new JButton("Confirm order");
+    /**
+     * The Clear basket button.
+     */
     JButton clearBasketButton = new JButton("Clear basket");
 
+    /**
+     * Instantiates a new Shop.
+     */
     public Shop(){
         super("My Shop");
     }
 
+    /**
+     * Init gui.
+     */
     public void initGUI(){
         JFrame frame = new JFrame("Shop");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -142,6 +179,12 @@ public class Shop extends JFrame {
         isImportedCheckBox.setSelected(false);
     }
 
+    /**
+     * Utility method to check if a string is representing a number.
+     *
+     * @param str the str
+     * @return the boolean
+     */
     public static boolean isNumeric(String str) {
         return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
     }
